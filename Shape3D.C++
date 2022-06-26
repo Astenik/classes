@@ -49,3 +49,16 @@ class Rectangular: public Shape3D, public Rectangle{
 };
 int Rectangular:: y = 0;
 int Rectangular:: gety(){ return y; }
+class prism: public Shape3D, public Triangle{
+    public:
+     prism(double a = 1, double b = 1, double c = 1, double d = 1):Triangle(a, b, c), prism_high(d){ x++; }
+     virtual ~prism(){ x--; cout<<"prism destructor"<<endl;v }
+     virtual double area(){ return (Triangle:: area()*2 + prism_high*side1 + prism_high*side2 + prism_high*side3); }
+     virtual doule volume(){ return Triangle:: area()*prism_high; }
+     static int getx();
+    private:
+     double prism_high;
+     static int x;
+};
+int prism:: x = 0;
+int prism:: getx(){ return x; }
