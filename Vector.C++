@@ -1,3 +1,5 @@
+// This class is for dynamic increacing vector. You can add element from the back calling push_back(), add element from the fron calling push_front()
+// get the capacity, size and addrec as follow get_capacity/addres/size.// you also can get the count of borned objects using the get_s function.//
 #include <iostream>
 using namespace std;
 class Vector{
