@@ -5,7 +5,7 @@ using namespace std;
 class Vector{
     public:
        Vector();
-       Vector(Vector &);
+       Vector(const Vector &);
        ~Vector();
     public:
        void push_back(int);
@@ -14,6 +14,10 @@ class Vector{
        int get_capacity();
        int* get_addres();
        int static get_s();
+       Vector& operator=(const Vector&);
+       Vector operator+(const Vector&)const;
+       Vector operator*(int)const;
+       int operator[](int)const;
     private:
        int m_capacity;
        int m_size;
@@ -26,12 +30,12 @@ Vector:: Vector(){
     m_arr = new int [m_capacity];
     ++s;
 }
-Vector:: Vector(Vector & v){
+Vector:: Vector(const Vector & v){
+    m_size = v.m_size;
     m_capacity = v.m_capacity;
     m_arr = new int [m_capacity];
-    for(int i = 0; i < v.m_size; ++i){
+    for(int i = 0; i < m_size; ++i){
             m_arr[i] = v.m_arr[i];
-            ++m_size;
     }
     ++s;
 }
@@ -81,22 +85,70 @@ void Vector:: push_front(int element){
     }
     ++m_size;
 }
+Vector& Vector:: operator=(const Vector& v){
+     if(this == &v){
+         return *this;
+     }
+     delete [] m_arr;
+     m_capacity = v.m_capacity;
+     m_size = v.m_size;
+     m_arr = new int [m_capacity];
+     for(int i = 0; i < m_size; ++i){
+         m_arr[i] = v.m_arr[i];
+     }
+     return *this;
+}
+Vector Vector:: operator+(const Vector& v)const{
+     Vector res;
+     res.m_capacity = m_capacity + v.m_capacity;
+     res.m_size = m_size + v.m_size;
+     res.m_arr = new int [res.m_capacity];
+     for(int i = 0; i < m_size; ++i){
+         res.m_arr[i] = m_arr[i];
+     }
+     int j = m_size;
+     for(int i = 0; i < v.m_size; ++i){
+         res.m_arr[j] = v.m_arr[i];
+         ++j;
+     }
+     return res;
+}
+Vector Vector:: operator*(int c)const{
+    Vector res;
+    res.m_capacity = m_capacity;
+    res.m_size = m_size;
+    res.m_arr = new int [m_capacity];
+    for(int i = 0; i < m_size; ++i){
+        res.m_arr[i] = c*m_arr[i];
+    }
+    return res;
+}
+int Vector:: operator[](int i)const{
+    if(0 <= i < m_size){
+    return m_arr[i];
+    }
+    return -1;
+}
 int Vector:: s = 0;
 int Vector:: get_s(){
     return s;
 }
 int main(){
     Vector v;
-    cout<<v.get_size()<<endl;
-    cout<<v.get_capacity()<<endl;
-    cout<<v.get_addres()<<endl;
-    int capacity = v.get_capacity();
-    for(int i = 0; i < capacity; ++i){
-        v.push_back(i);
+    v.push_back(1);
+    v.push_front(0);
+    Vector v2(v);
+    v2.push_back(4);
+    v2 = v2*2;
+    Vector v3;
+    v3 = v2;
+    v3.push_back(8);
+    cout<<"v size "<<v.get_size()<<endl;
+    cout<<"v2 size "<<v2.get_size()<<endl;
+    cout<<"v3 size "<<v3.get_size()<<endl;
+    for(int i = 0; i < 4; ++i){
+        cout<<v3[i]<<" ";
     }
-    v.push_back(10);
-    cout<<v.get_size()<<endl;
-    cout<<v.get_capacity()<<endl;
-    cout<<v.get_addres()<<endl;
     return 0;
 }
+
