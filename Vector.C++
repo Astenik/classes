@@ -25,9 +25,9 @@ class Vector{
        static int s;
 };
 Vector:: Vector(){
-    m_capacity = 5;
+    m_capacity = 0;
     m_size = 0;
-    m_arr = new int [m_capacity];
+    m_arr = nullptr;
     ++s;
 }
 Vector:: Vector(const Vector & v){
@@ -46,7 +46,7 @@ Vector:: ~Vector(){
 }
 void Vector:: push_back(int element){
      if(m_size == m_capacity){
-        m_capacity *= 2;
+        m_capacity = m_capacity ? m_capacity*2 : 1;
         int* ptr = new int[m_capacity];
         for(int i = 0; i < m_size; ++i){
             ptr[i] = m_arr[i];
@@ -54,7 +54,7 @@ void Vector:: push_back(int element){
         delete [] m_arr;
         m_arr = ptr;
      }
-    m_arr[m_size] = element;
+    m_arr[m_size] = element; 
     ++m_size;
 }
 int Vector:: get_size(){
@@ -68,11 +68,11 @@ int* Vector:: get_addres(){
 }
 void Vector:: push_front(int element){
     if(m_size == m_capacity){
-        m_capacity *= 2;
+        m_capacity = m_capacity ? m_capacity*2 : 1;
         int* ptr = new int[m_capacity];
         ptr[0] = element;
-        for(int i = 1; i < m_size; ++i){
-            ptr[i] = m_arr[i - 1];
+        for(int i = 0; i < m_size; ++i){
+            ptr[i + 1] = m_arr[i];
         }
         delete [] m_arr;
         m_arr = ptr;
@@ -151,4 +151,3 @@ int main(){
     }
     return 0;
 }
-
