@@ -23,6 +23,7 @@ class Datas: public Stack
   public:
      Datas();
      Datas(int);
+     Datas(Datas&&);
      ~Datas();
   public:
      void push(int);
@@ -55,6 +56,16 @@ Datas:: Datas(int size):m_size(size), m_top(-1)
     m_arr = new int [m_size];
     assert(m_arr);
     ++m_count;
+}
+Datas:: Datas(Datas&& obj)
+{
+    /*this is a move ctor.*/
+    m_size = obj.m_size;
+    m_top = obj.m_top;
+    m_arr = obj.m_arr;
+    obj.m_arr = nullptr;
+    obj.m_top = 0;
+    obj.m_size = 0;
 }
 Datas:: ~Datas()
 {
@@ -133,6 +144,7 @@ class NodeArray: public Stack
      Listnode m_top;
      NodeArray();
      NodeArray(int);
+     NodeArray(NodeArray&&);
      ~NodeArray(){ --m_c; delete m_nodes; }
   public:
      void push(int);
@@ -166,6 +178,14 @@ NodeArray:: NodeArray(int val)
     assert(m_nodes);
     m_top = *m_nodes;
     ++m_c;
+}
+NodeArray:: NodeArray(NodeArray&& obj)
+{
+    /*this is a move ctor for NodeArray.*/
+    m_top = obj.m_top;
+    m_nodes = obj.m_nodes;
+    obj.m_nodes = nullptr;
+    obj.m_top = 0;
 }
 void NodeArray:: push(int val)
 {
