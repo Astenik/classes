@@ -8,6 +8,7 @@ class Vector{
     public:
        Vector();
        Vector(const Vector &);
+       Vector(Vector&&);
        ~Vector();
     public:
        void push_back(int);
@@ -27,12 +28,14 @@ class Vector{
        static int s;
 };
 Vector:: Vector(){
+    /*this is the default ctor.*/
     m_capacity = 0;
     m_size = 0;
     m_arr = nullptr;
     ++s;
 }
 Vector:: Vector(const Vector & v){
+    /*this is the copy ctor.*/
     m_size = v.m_size;
     m_capacity = v.m_capacity;
     m_arr = new int [m_capacity];
@@ -41,12 +44,26 @@ Vector:: Vector(const Vector & v){
     }
     ++s;
 }
-Vector:: ~Vector(){
+Vector:: Vector(Vector&& obj)
+{
+    /*this is the move ctor.*/
+    m_size = obj.m_size;
+    m_capacity = obj.m_capacity;
+    m_arr = obj.m_arr;
+    obj.m_arr = nullptr;
+    obj.m_size = 0;
+    obj.m_capacity =0;
+}
+Vector:: ~Vector()
+{
+    /*this is the dtor.*/
     --s;
     delete [] m_arr;
     cout<<"dectructor"<<endl;
 }
-void Vector:: push_back(int element){
+void Vector:: push_back(int element)
+{
+    /*this is a function that addes element to the vector from the end.*/
      if(m_size == m_capacity){
         m_capacity = m_capacity ? m_capacity*2 : 1;
         int* ptr = new int[m_capacity];
@@ -59,16 +76,23 @@ void Vector:: push_back(int element){
     m_arr[m_size] = element; 
     ++m_size;
 }
-int Vector:: get_size(){
+int Vector:: get_size()
+{
+    /*this function returns the count of elements.*/
     return m_size;
 }
-int Vector:: get_capacity(){
+int Vector:: get_capacity()
+{
+    /*this function returns the size of memory.*/
     return m_capacity;
 }
-int* Vector:: get_addres(){
+int* Vector:: get_addres()
+{
     return m_arr;
 }
-void Vector:: push_front(int element){
+void Vector:: push_front(int element)
+{
+    /*this function addes element to the front.*/
     if(m_size == m_capacity){
         m_capacity = m_capacity ? m_capacity*2 : 1;
         int* ptr = new int[m_capacity];
