@@ -33,6 +33,8 @@ class Datas: public Stack<U>
      void pop();
      Datas<U>& operator=(const Datas&);
      Datas<U> operator+(const Datas&)const;
+     U operator[](int);
+     int get_top();
      static int get_count();
   private:
      int m_size;
@@ -40,6 +42,16 @@ class Datas: public Stack<U>
      int m_top;
      static int m_count;
 };
+template <typename U>
+U Datas<U>:: operator[](int i)
+{
+    return m_arr[i];
+}
+template <typename U>
+int Datas<U>:: get_top()
+{
+    return m_top;
+}
 template <typename U>
 int Datas<U>:: m_count = 0;
 template <typename U>
@@ -89,7 +101,7 @@ void Datas<U>:: push(U elem)
     if(m_top <= m_size - 1)
     {
         ++m_top;
-        m_arr[m_size] = elem;
+        m_arr[m_top] = elem;
     }
     else
     {
@@ -193,8 +205,9 @@ NodeArray<U>:: NodeArray(U val)
 {
     /*this is a constructor with parametres*/
     m_nodes = new Listnode<U>;
-    m_nodes->m_value = val;
     assert(m_nodes);
+    m_nodes->m_value = val;
+    m_nodes->m_next = nullptr;
     m_top = *m_nodes;
     ++m_c;
 }
@@ -270,4 +283,20 @@ ostream& NodeArray<U>:: operator<<(ostream& out)
     }
     out<<ptr->m_value<<endl;
     return out;
+}
+int main()
+{
+    Datas <int> obj(4);
+    obj.push(7);
+    obj.push(8);
+    obj.push(9);
+    int c = obj.get_top();
+    for(int i = 0; i <= c; ++i)
+    {
+        cout<<obj[i]<<" ";
+    }
+    NodeArray <int> n(12);
+    n.push(67);
+    cout<<n.m_top.m_value<<endl;
+    return 0;
 }
