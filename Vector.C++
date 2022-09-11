@@ -1,9 +1,11 @@
-// This class is for dynamic increacing vector. You can add element from the back calling push_back(), add element from the fron calling push_front()
-// get the capacity, size and addrec as follow get_capacity/addres/size.// you also can get the count of borned objects using the get_s function.//
-/* this file is:
+/* This class is for dynamic increacing vector. You can add element from the back calling push_back(), add element from the fron calling push_front()
+ get the capacity, size and addrec as follow get_capacity/addres/size.// you also can get the count of borned objects using the get_s function.
+ this file is:
 "Vector.h"*/
 #include <iostream>
+#include <assert.h>
 using namespace std;
+template <typename T>
 class Vector{
     public:
        Vector();
@@ -15,7 +17,7 @@ class Vector{
        void push_front(int);
        int get_size();
        int get_capacity();
-       int* get_addres();
+       T* get_addres();
        int static get_s();
        Vector& operator=(const Vector&);
        Vector operator+(const Vector&)const;
@@ -24,27 +26,31 @@ class Vector{
     private:
        int m_capacity;
        int m_size;
-       int* m_arr;
+       T* m_arr;
        static int s;
 };
-Vector:: Vector(){
+template <typename T>
+Vector<T>:: Vector(){
     /*this is the default ctor.*/
     m_capacity = 0;
     m_size = 0;
     m_arr = nullptr;
     ++s;
 }
-Vector:: Vector(const Vector & v){
+template <typename T>
+Vector<T>:: Vector(const Vector & v){
     /*this is the copy ctor.*/
     m_size = v.m_size;
     m_capacity = v.m_capacity;
-    m_arr = new int [m_capacity];
+    m_arr = new T [m_capacity];
+    assert(m_arr);
     for(int i = 0; i < m_size; ++i){
             m_arr[i] = v.m_arr[i];
     }
     ++s;
 }
-Vector:: Vector(Vector&& obj)
+template <typename T>
+Vector<T>:: Vector(Vector&& obj)
 {
     /*this is the move ctor.*/
     m_size = obj.m_size;
@@ -54,19 +60,22 @@ Vector:: Vector(Vector&& obj)
     obj.m_size = 0;
     obj.m_capacity =0;
 }
-Vector:: ~Vector()
+template <typename T>
+Vector<T>:: ~Vector()
 {
     /*this is the dtor.*/
     --s;
     delete [] m_arr;
     cout<<"dectructor"<<endl;
 }
-void Vector:: push_back(int element)
+template <typename T>
+void Vector<T>:: push_back(int element)
 {
     /*this is a function that addes element to the vector from the end.*/
      if(m_size == m_capacity){
         m_capacity = m_capacity ? m_capacity*2 : 1;
-        int* ptr = new int[m_capacity];
+        T* ptr = new T[m_capacity];
+        assert(ptr);
         for(int i = 0; i < m_size; ++i){
             ptr[i] = m_arr[i];
         }
@@ -76,26 +85,31 @@ void Vector:: push_back(int element)
     m_arr[m_size] = element; 
     ++m_size;
 }
-int Vector:: get_size()
+template <typename T>
+int Vector<T>:: get_size()
 {
     /*this function returns the count of elements.*/
     return m_size;
 }
-int Vector:: get_capacity()
+template <typename T>
+int Vector<T>:: get_capacity()
 {
     /*this function returns the size of memory.*/
     return m_capacity;
 }
-int* Vector:: get_addres()
+template <typename T>
+T* Vector<T>:: get_addres()
 {
     return m_arr;
 }
-void Vector:: push_front(int element)
+template <typename T>
+void Vector<T>:: push_front(int element)
 {
     /*this function addes element to the front.*/
     if(m_size == m_capacity){
         m_capacity = m_capacity ? m_capacity*2 : 1;
-        int* ptr = new int[m_capacity];
+        T* ptr = new T[m_capacity];
+        assert(ptr);
         ptr[0] = element;
         for(int i = 0; i < m_size; ++i){
             ptr[i + 1] = m_arr[i];
@@ -111,24 +125,29 @@ void Vector:: push_front(int element)
     }
     ++m_size;
 }
-Vector& Vector:: operator=(const Vector& v){
-     if(this == &v){
+template <typename T>
+Vector<T>& Vector<T>:: operator=(const Vector& v){
+     if(this == &v)
+     {
          return *this;
      }
      delete [] m_arr;
      m_capacity = v.m_capacity;
      m_size = v.m_size;
-     m_arr = new int [m_capacity];
+     m_arr = new T [m_capacity];
+     assert(m_arr);
      for(int i = 0; i < m_size; ++i){
          m_arr[i] = v.m_arr[i];
      }
      return *this;
 }
-Vector Vector:: operator+(const Vector& v)const{
+template <typename T>
+Vector<T> Vector<T>:: operator+(const Vector& v)const{
      Vector res;
      res.m_capacity = m_capacity + v.m_capacity;
      res.m_size = m_size + v.m_size;
-     res.m_arr = new int [res.m_capacity];
+     res.m_arr = new T [res.m_capacity];
+     assert(res.m_arr);
      for(int i = 0; i < m_size; ++i){
          res.m_arr[i] = m_arr[i];
      }
@@ -139,34 +158,40 @@ Vector Vector:: operator+(const Vector& v)const{
      }
      return res;
 }
-Vector Vector:: operator*(int c)const{
+template <typename T>
+Vector<T> Vector<T>:: operator*(int c)const{
     Vector res;
     res.m_capacity = m_capacity;
     res.m_size = m_size;
-    res.m_arr = new int [m_capacity];
+    res.m_arr = new T [m_capacity];
+    assert(res.m_arr);
     for(int i = 0; i < m_size; ++i){
         res.m_arr[i] = c*m_arr[i];
     }
     return res;
 }
-int Vector:: operator[](int i)const{
+template <typename T>
+int Vector<T>:: operator[](int i)const{
     if(0 <= i < m_size){
     return m_arr[i];
     }
     return -1;
 }
-int Vector:: s = 0;
-int Vector:: get_s(){
+template <typename T>
+int Vector<T>:: s = 0;
+template <typename T>
+int Vector<T>:: get_s()
+{
     return s;
 }
 int main(){
-    Vector v;
+    Vector <int> v;
     v.push_back(1);
     v.push_front(0);
-    Vector v2(v);
+    Vector <int> v2(v);
     v2.push_back(4);
     v2 = v2*2;
-    Vector v3;
+    Vector <int> v3;
     v3 = v2;
     v3.push_back(8);
     cout<<"v size "<<v.get_size()<<endl;
