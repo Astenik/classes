@@ -1,24 +1,27 @@
 #include <iostream>
 #include <assert.h>
 using namespace std;
+template <typename T>
 struct Listnode
 {
-    int m_value;
+    T m_value;
     Listnode* m_next;
     Listnode():m_value(0), m_next(nullptr){}
     Listnode(int val):m_value(val), m_next(nullptr){}
     Listnode(int val, Listnode* next):m_value(val), m_next(next){}
     ~Listnode(){}
 };
+template <typename U>
 class Stack 
 {
   public:
      Stack(){}
      virtual ~Stack(){}
-     virtual void  push(int) = 0;
+     virtual void  push(U) = 0;
      virtual void  pop() = 0;
 };
-class Datas: public Stack 
+template <typename U>
+class Datas: public Stack<U> 
 {
   public:
      Datas();
@@ -26,38 +29,43 @@ class Datas: public Stack
      Datas(Datas&&);
      ~Datas();
   public:
-     void push(int);
+     void push(U);
      void pop();
-     Datas& operator=(const Datas&);
-     Datas operator+(const Datas&)const;
+     Datas<U>& operator=(const Datas&);
+     Datas<U> operator+(const Datas&)const;
      static int get_count();
   private:
      int m_size;
-     int* m_arr;
+     U* m_arr;
      int m_top;
      static int m_count;
 };
-int Datas:: m_count = 0;
-int Datas:: get_count()
+template <typename U>
+int Datas<U>:: m_count = 0;
+template <typename U>
+int Datas<U>:: get_count()
 { 
     /*this function returns the count of created objects.*/
     return m_count; 
 }
-Datas:: Datas():m_size(1), m_top(-1)
+template <typename U>
+Datas<U>:: Datas():m_size(1), m_top(-1)
 {
     /*this is default constructor*/
-    m_arr = new int [m_size];
+    m_arr = new U [m_size];
     assert(m_arr);
     ++m_count;
 }
-Datas:: Datas(int size):m_size(size), m_top(-1)
+template <typename U>
+Datas<U>:: Datas(int size):m_size(size), m_top(-1)
 {
     /*this is constructor with parametres*/
-    m_arr = new int [m_size];
+    m_arr = new U [m_size];
     assert(m_arr);
     ++m_count;
 }
-Datas:: Datas(Datas&& obj)
+template <typename U>
+Datas<U>:: Datas(Datas<U>&& obj)
 {
     /*this is a move ctor.*/
     m_size = obj.m_size;
@@ -67,13 +75,15 @@ Datas:: Datas(Datas&& obj)
     obj.m_top = 0;
     obj.m_size = 0;
 }
-Datas:: ~Datas()
+template <typename U>
+Datas<U>:: ~Datas()
 {
     /*this is destructor*/
     delete [] m_arr;
     --m_count;
 }
-void Datas:: push(int elem)
+template <typename U>
+void Datas<U>:: push(U elem)
 {
     /*this member function(method) addes a element to the array to the top.*/
     if(m_top <= m_size - 1)
@@ -86,7 +96,8 @@ void Datas:: push(int elem)
         cout<<"the array is full."<<endl;
     }
 }
-void Datas:: pop()
+template <typename U>
+void Datas<U>:: pop()
 {
     /*this method remove the top elemrny*/
     if(m_top >= 0)
@@ -99,7 +110,8 @@ void Datas:: pop()
         cout<<"there is no element to remove."<<endl;
     }
 }
-Datas& Datas:: operator=(const Datas& obj)
+template <typename U>
+Datas<U>& Datas<U>:: operator=(const Datas<U>& obj)
 {
     /*this is a operator =.*/
     if(m_size == obj.m_size)
@@ -112,7 +124,8 @@ Datas& Datas:: operator=(const Datas& obj)
     else
     {
         delete [] m_arr;
-        m_arr = new int [obj.m_size];
+        m_arr = new U [obj.m_size];
+        assert(m_arr);
         m_size = obj.m_size;
         m_top = obj.m_top;
         for(int i = 0; i <= m_top; ++i)
@@ -122,9 +135,10 @@ Datas& Datas:: operator=(const Datas& obj)
     }
     return *this;
 }
-Datas Datas:: operator+(const Datas& obj)const
+template <typename U>
+Datas<U> Datas<U>:: operator+(const Datas<U>& obj)const
 {
-    Datas res(m_size + obj.m_size);
+    Datas<U> res(m_size + obj.m_size);
     int i;
     for(i = 0; i <= m_top; ++i)
     {
@@ -138,48 +152,54 @@ Datas Datas:: operator+(const Datas& obj)const
     res.m_top = i - 1; 
     return res;
 }
-class NodeArray: public Stack
+template <typename U>
+class NodeArray: public Stack<U>
 {
   public:
-     Listnode m_top;
+     Listnode<U> m_top;
      NodeArray();
-     NodeArray(int);
+     NodeArray(U);
      NodeArray(NodeArray&&);
      ~NodeArray(){ --m_c; delete m_nodes; }
   public:
-     void push(int);
+     void push(U);
      void pop();
-     NodeArray& operator=(const NodeArray&);
-     NodeArray operator+(const NodeArray)const;
+     NodeArray<U>& operator=(const NodeArray&);
+     NodeArray<U> operator+(const NodeArray)const;
      static int get_c();
-     friend ostream&  operator<<(ostream&, NodeArray&);
+     ostream&  operator<<(ostream&);
   private:
     static int m_c;
-    Listnode* m_nodes;
+    Listnode <U>* m_nodes;
 };
-int NodeArray:: m_c = 0;
-int NodeArray:: get_c()
+template <typename U>
+int NodeArray<U>:: m_c = 0;
+template <typename U>
+int NodeArray<U>:: get_c()
 {
     return m_c; // returns the count of created objects;
 }
-NodeArray:: NodeArray()
+template <typename U>
+NodeArray<U>:: NodeArray()
 {
     /* this is a  default constructor */
-    m_nodes = new Listnode;
+    m_nodes = new Listnode<U>;
     assert(m_nodes);
     m_top = *m_nodes;
     ++m_c;
 }
-NodeArray:: NodeArray(int val)
+template <typename U>
+NodeArray<U>:: NodeArray(U val)
 {
     /*this is a constructor with parametres*/
-    m_nodes = new Listnode;
+    m_nodes = new Listnode<U>;
     m_nodes->m_value = val;
     assert(m_nodes);
     m_top = *m_nodes;
     ++m_c;
 }
-NodeArray:: NodeArray(NodeArray&& obj)
+template <typename U>
+NodeArray<U>:: NodeArray(NodeArray<U>&& obj)
 {
     /*this is a move ctor for NodeArray.*/
     m_top = obj.m_top;
@@ -187,57 +207,62 @@ NodeArray:: NodeArray(NodeArray&& obj)
     obj.m_nodes = nullptr;
     obj.m_top = 0;
 }
-void NodeArray:: push(int val)
+template <typename U>
+void NodeArray<U>:: push(U val)
 {
     /*this is a function that push element to the top*/
-    Listnode* tmp = new Listnode;
+    Listnode<U>* tmp = new Listnode<U>;
     assert(tmp);
     tmp->m_value = val;
     tmp->m_next = &m_top;
     m_top = *tmp;
 }
-void NodeArray:: pop()
+template <typename U>
+void NodeArray<U>:: pop()
 {
     /*this is a function that remvoe node frome the top.*/
-    Listnode* tmp = &m_top;
+    Listnode<U>* tmp = &m_top;
     m_top = *m_top.m_next;
     delete tmp;
 }
-NodeArray& NodeArray:: operator=(const NodeArray& oth)
+template <typename U>
+NodeArray<U>& NodeArray<U>:: operator=(const NodeArray<U>& oth)
 {
     /*this is operator =.*/
-    NodeArray tmp(m_nodes->m_value);
-    Listnode* ptr = oth.m_top.m_next;
+    NodeArray<U> tmp(m_nodes->m_value);
+    Listnode <U>* ptr = oth.m_top.m_next;
     tmp.push(oth.m_top.m_value);
     while(ptr->m_next != nullptr)
     {
         tmp.push(ptr->m_value);
         ptr = ptr->m_next;
     }
-    NodeArray rev(tmp.m_nodes->m_value);
+    NodeArray<U> rev(tmp.m_nodes->m_value);
     while(tmp.m_top.m_next != nullptr)
     {
         rev.push(tmp.m_top.m_value);
         tmp.m_top = *tmp.m_top.m_next;
     }
-    NodeArray* ptr2 = this;
+    NodeArray <U>* ptr2 = this;
     *this = rev;
     delete ptr2;
     return *this;
 }
-NodeArray NodeArray:: operator+(const NodeArray oth)const
+template <typename U>
+NodeArray<U> NodeArray<U>:: operator+(const NodeArray<U> oth)const
 {
     /*this is a operator + that creates the new NodeArray that consists of the nodes from two NodeArrays.*/
-   NodeArray tmp;
+   NodeArray <U> tmp;
    tmp = oth;
-   NodeArray tmp2;
+   NodeArray <U> tmp2;
    tmp2 = *this;
    tmp2.m_nodes->m_next = &tmp.m_top;
    return tmp2;
 }
-ostream& operator<<(ostream& out, NodeArray obj)
+template <typename U>
+ostream& NodeArray<U>:: operator<<(ostream& out)
 {
-    Listnode* ptr = &obj.m_top;
+    Listnode<U>* ptr = &m_top;
     while(ptr->m_next != nullptr)
     {
         out<<ptr->m_value<<endl;
